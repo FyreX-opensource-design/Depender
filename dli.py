@@ -288,7 +288,7 @@ class Depender:
         
         return profiles
     
-    def create_web_app(self, url, name=None, icon=None, category="Network"):
+    def create_web_app(self, url, name=None, icon=None, category="Network", system_level=False):
         """Create a web application from a URL"""
         try:
             # Validate URL
@@ -333,8 +333,12 @@ class Depender:
                             with urllib.request.urlopen(req, context=ctx, timeout=5) as response:
                                 icon_data = response.read()
                             
-                            icon_path = Path.home() / f".local/share/icons/{name.lower().replace(' ', '-')}.png"
-                            icon_path.parent.mkdir(parents=True, exist_ok=True)
+                            if system_level:
+                                icon_path = Path(f"/usr/share/icons/hicolor/64x64/apps/{name.lower().replace(' ', '-')}.png")
+                                icon_path.parent.mkdir(parents=True, exist_ok=True)
+                            else:
+                                icon_path = Path.home() / f".local/share/icons/{name.lower().replace(' ', '-')}.png"
+                                icon_path.parent.mkdir(parents=True, exist_ok=True)
                             
                             with open(icon_path, 'wb') as f:
                                 f.write(icon_data)
@@ -352,7 +356,13 @@ class Depender:
             
             # Generate a safe filename
             filename = f"{name.lower().replace(' ', '-')}.desktop"
-            desktop_file = Path.home() / f".local/share/applications/{filename}"
+            if system_level:
+                desktop_file = Path(f"/usr/share/applications/{filename}")
+            else:
+                desktop_file = Path.home() / f".local/share/applications/{filename}"
+            
+            # Ensure parent directory exists
+            desktop_file.parent.mkdir(parents=True, exist_ok=True)
             
             # Create the desktop file
             with open(desktop_file, 'w') as f:
@@ -418,12 +428,18 @@ class Depender:
         except subprocess.CalledProcessError:
             return False
     
-    def create_application(self, name, exec_cmd, icon=None, comment=None, category="Utility"):
+    def create_application(self, name, exec_cmd, icon=None, comment=None, category="Utility", system_level=False):
         """Create a new application .desktop file"""
         try:
             # Generate a safe filename
             filename = f"{name.lower().replace(' ', '-')}.desktop"
-            desktop_file = Path.home() / f".local/share/applications/{filename}"
+            if system_level:
+                desktop_file = Path(f"/usr/share/applications/{filename}")
+            else:
+                desktop_file = Path.home() / f".local/share/applications/{filename}"
+            
+            # Ensure parent directory exists
+            desktop_file.parent.mkdir(parents=True, exist_ok=True)
             
             # Create the desktop file
             with open(desktop_file, 'w') as f:
@@ -544,6 +560,7 @@ def main():
     app_parser.add_argument('-i', '--icon', help='Icon path or name')
     app_parser.add_argument('-c', '--comment', help='Application description')
     app_parser.add_argument('-g', '--category', default='Utility', help='Application category')
+    app_parser.add_argument('-s', '--system', action='store_true', help='Create desktop file in system-level location (/usr/share/applications)')
     
     # create web command
     web_parser = create_subparsers.add_parser('web', help='Create a web application from a URL')
@@ -551,6 +568,7 @@ def main():
     web_parser.add_argument('-n', '--name', help='Application name (optional)')
     web_parser.add_argument('-i', '--icon', help='Icon path or name (optional)')
     web_parser.add_argument('-g', '--category', default='Network', help='Application category')
+    web_parser.add_argument('-s', '--system', action='store_true', help='Create desktop file in system-level location (/usr/share/applications)')
     
     # remove command
     remove_parser = subparsers.add_parser('remove', help='Remove an application')
@@ -631,7 +649,8 @@ def main():
                 args.exec,
                 args.icon,
                 args.comment,
-                args.category
+                args.category,
+                args.system
             )
             if success:
                 print(message)
@@ -644,7 +663,8 @@ def main():
                 args.url,
                 args.name,
                 args.icon,
-                args.category
+                args.category,
+                args.system
             )
             if success:
                 print(message)
