@@ -1,1 +1,1 @@
-echo working
+notify-send working
