@@ -1,1 +1,1 @@
-nofity-send "updates-working"
+notfiy-send "updates-working"
