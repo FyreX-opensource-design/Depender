@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=Depender
-Comment=Desktop Application Manager and Creator
-Exec=depender
-Icon=applications-development
-Terminal=true
-Type=Application
-Categories=Utility;Development;
