@@ -1,11 +1,10 @@
 <div align="center">
   <h1 style="font-size: 120px; font-weight: 900; margin: 0 0 36px 0;">
-  🌐 Depender - Advanced Application Manager for Arch Linux!
+  🌐 Depender - Advanced Application Manager for Linux Systems!
   </h1>
 
 [![GitHub license](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://github.com/MdX07r/depender/blob/main/LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/MdX07r/depender/pulls)
-[![Desind OS Compatible](https://img.shields.io/badge/Desind-Compatible-F1F1F1)](https://github.com/MdX07r/desind)
 
 </div>
 
